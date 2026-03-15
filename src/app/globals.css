@@ -1,26 +1,100 @@
 @import "tailwindcss";
 
+/* Design tokens — single source of truth */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary (purple — reference UI) */
+  --color-primary: #7c3aed;
+  --color-primary-hover: #6d28d9;
+  --color-primary-muted: #f3e8ff;
+
+  /* Board area background (light green/teal) */
+  --board-background: #ecfdf5;
+
+  /* Neutrals (warm slate) */
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --foreground: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --border-muted: #f1f5f9;
+
+  /* Semantic */
+  --color-success: #059669;
+  --color-success-muted: #d1fae5;
+  --color-warning: #d97706;
+  --color-warning-muted: #fef3c7;
+  --color-error: #dc2626;
+  --color-error-muted: #fee2e2;
+  --color-info: #2563eb;
+  --color-info-muted: #dbeafe;
+
+  /* Stage colors (for badges/kanban) */
+  --stage-applied: #3b82f6;
+  --stage-applied-muted: #dbeafe;
+  --stage-interviewing: #f59e0b;
+  --stage-interviewing-muted: #fef3c7;
+  --stage-offer: #059669;
+  --stage-offer-muted: #d1fae5;
+  --stage-rejected: #dc2626;
+  --stage-rejected-muted: #fee2e2;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1 rgb(0 0 0 / 0.1), 0 2px 4px -2 rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 }
 
 @theme inline {
+  /* Colors */
   --color-background: var(--background);
+  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-primary-muted: var(--color-primary-muted);
+  --color-secondary: var(--text-secondary);
+  --color-muted: var(--text-muted);
+  --color-border: var(--border);
+  --color-border-muted: var(--border-muted);
+  --color-board-background: var(--board-background);
+  --color-success: var(--color-success);
+  --color-success-muted: var(--color-success-muted);
+  --color-warning: var(--color-warning);
+  --color-warning-muted: var(--color-warning-muted);
+  --color-error: var(--color-error);
+  --color-error-muted: var(--color-error-muted);
+  --color-info: var(--color-info);
+  --color-info-muted: var(--color-info-muted);
+  /* Stage colors for utilities */
+  --color-stage-applied: var(--stage-applied);
+  --color-stage-applied-muted: var(--stage-applied-muted);
+  --color-stage-interviewing: var(--stage-interviewing);
+  --color-stage-interviewing-muted: var(--stage-interviewing-muted);
+  --color-stage-offer: var(--stage-offer);
+  --color-stage-offer-muted: var(--stage-offer-muted);
+  --color-stage-rejected: var(--stage-rejected);
+  --color-stage-rejected-muted: var(--stage-rejected-muted);
+  /* Typography */
+  --font-sans: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  /* Shadows */
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  /* Border radius */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }

@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  applications    Application[]
+  gmailCredential GmailCredential?
+  shares          Share[]
+}
+
+model GmailCredential {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  accessToken  String
+  refreshToken String?
+  email        String   // Gmail address
+  expiresAt    DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Application {
+  id                  String   @id @default(cuid())
+  userId              String?  // optional for migration; app always sets it; wipe script clears orphans
+  company             String
+  role                String
+  salary              String?
+  stage               String   @default("applied") // applied | interviewing | offer | rejected
+  description         String?
+  url                 String?
+  appliedAt           DateTime?
+  sourceEmailId       String?  @unique // Gmail message ID for dedup
+  sourceEmailSubject  String?
+  sourceEmailSnippet  String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user      User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contacts  Contact[]
+  documents Document[]
+  activities Activity[]
+}
+
+model Contact {
+  id                    String       @id @default(cuid())
+  name                  String
+  email                 String?
+  role                  String?
+  company               String?
+  linkedToApplicationId String?
+  createdAt             DateTime     @default(now())
+
+  application Application? @relation(fields: [linkedToApplicationId], references: [id], onDelete: SetNull)
+}
+
+model Document {
+  id            String   @id @default(cuid())
+  applicationId String
+  filename      String
+  path          String
+  type          String   // resume | cover
+  createdAt     DateTime @default(now())
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+}
+
+model Activity {
+  id            String   @id @default(cuid())
+  applicationId String
+  type          String   // applied | interview | offer | rejection
+  date          DateTime
+  note          String?
+  createdAt     DateTime @default(now())
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+}
+
+model Share {
+  id          String    @id @default(cuid())
+  token       String    @unique
+  type        String    // board | application
+  referenceId String?
+  userId      String?
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}

@@ -1,0 +1,32 @@
+# Fly.io app config. Create the app with: fly launch
+# Create a volume and attach: fly volumes create app_data --size 1
+# Then: fly volumes list (note the volume id) and add [mounts] below with that volume, or use fly launch and attach volume when prompted.
+
+app = "application-tracker"
+
+[build]
+
+[env]
+  NODE_ENV = "production"
+  DATA_DIR = "/data"
+  PORT = "3000"
+  # Set DATABASE_URL via: fly secrets set DATABASE_URL="file:/data/dev.db"
+  # Set all other secrets (SESSION_PASSWORD, GOOGLE_*, etc.) in dashboard or fly secrets set
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+# Uncomment and set to your volume name after creating it (e.g. fly volumes create app_data --size 1)
+# [[mounts]]
+#   source = "app_data"
+#   destination = "/data"
