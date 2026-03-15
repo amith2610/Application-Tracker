@@ -5,8 +5,13 @@ import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/db";
 
 export async function GET(request: NextRequest) {
-  const baseUrl = request.nextUrl.clone();
-  baseUrl.pathname = "/gmail-import";
+  // Use public app URL in production so redirect doesn't go to internal host (e.g. 0.0.0.0)
+  const origin =
+    process.env.NEXT_PUBLIC_APP_URL ||
+    (request.headers.get("x-forwarded-proto") && request.headers.get("x-forwarded-host")
+      ? `${request.headers.get("x-forwarded-proto")}://${request.headers.get("x-forwarded-host")}`
+      : request.nextUrl.origin);
+  const baseUrl = new URL("/gmail-import", origin);
   baseUrl.search = "";
 
   try {
