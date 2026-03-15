@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { google, gmail_v1 } from "googleapis";
 import { InferenceClient } from "@huggingface/inference";
 import { prisma } from "@/lib/db";
-import { requireUser, AuthError } from "@/lib/session";
+import { requireUser, AuthError, destroySession } from "@/lib/session";
 
 function extractEmailBody(payload: gmail_v1.Schema$MessagePart): string {
   const extractFromPart = (part: gmail_v1.Schema$MessagePart): string => {
@@ -284,6 +284,13 @@ export async function POST(request: NextRequest) {
     async start(controller) {
       try {
         const user = await requireUser();
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.userId },
+        });
+        if (!dbUser) {
+          await destroySession();
+          throw new AuthError("Session invalid. Please log in again.");
+        }
         const body = await request.json();
         const {
           startDate,
@@ -650,7 +657,7 @@ export async function POST(request: NextRequest) {
       } catch (err) {
         const message =
           err instanceof AuthError
-            ? "Unauthorized"
+            ? err.message
             : isInsufficientScopesError(err)
               ? INSUFFICIENT_SCOPES_MESSAGE
               : err instanceof Error

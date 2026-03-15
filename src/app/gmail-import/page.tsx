@@ -50,7 +50,11 @@ function GmailImportContent() {
             ? "Authorization was cancelled or no code received."
             : err === "no_email"
               ? "Could not get your email from Google."
-              : "Authentication failed. Please try again."
+              : err === "timeout"
+                ? "Connection to Google timed out. Please try again."
+                : err === "callback_failed"
+                  ? "Google sign-in failed. Check that GOOGLE_REDIRECT_URI in production matches your app URL (e.g. https://your-app.up.railway.app/api/auth/callback) and is added in Google Cloud Console → Credentials → Authorized redirect URIs."
+                  : "Authentication failed. Please try again."
       );
     }
     if (success) {
